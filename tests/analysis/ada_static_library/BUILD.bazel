@@ -1,0 +1,42 @@
+load("@rules_ada//ada:defs.bzl", "ada_static_library")
+load(":tests.bzl",
+    "archive_includes_binder_test",
+    "static_action_graph_test",
+    "static_bind_is_library_mode_test",
+    "static_compiles_are_pic_test",
+    "static_exposes_cc_info_test",
+)
+
+ada_static_library(
+    name = "static_lib",
+    srcs = [
+        "srcs/foo.adb",
+        "srcs/foo.ads",
+    ],
+    tags = ["manual"],
+)
+
+static_action_graph_test(
+    name = "static_action_graph",
+    target_under_test = ":static_lib",
+)
+
+static_compiles_are_pic_test(
+    name = "static_compiles_are_pic",
+    target_under_test = ":static_lib",
+)
+
+static_bind_is_library_mode_test(
+    name = "static_bind_is_library_mode",
+    target_under_test = ":static_lib",
+)
+
+archive_includes_binder_test(
+    name = "archive_includes_binder",
+    target_under_test = ":static_lib",
+)
+
+static_exposes_cc_info_test(
+    name = "static_exposes_cc_info",
+    target_under_test = ":static_lib",
+)

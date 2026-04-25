@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: bazel test (${{ matrix.toolchain }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - fsf_gnat
+          - system_gnat
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Bazel
+        uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}-${{ matrix.toolchain }}
+          repository-cache: true
+
+      - name: Install GNAT (system_gnat only)
+        if: matrix.toolchain == 'system_gnat'
+        run: sudo apt-get update && sudo apt-get install -y gnat
+
+      - name: Run tests
+        run: |
+          if [[ "${{ matrix.toolchain }}" == "system_gnat" ]]; then
+            bazel test //... --extra_toolchains=@system_gnat//:toolchain
+          else
+            bazel test //...
+          fi

@@ -1,0 +1,170 @@
+load("@rules_ada//ada:defs.bzl", "ada_library")
+load(":tests.bzl",
+    "config_pragmas_propagated_test",
+    "copts_propagated_test",
+    "direct_ali_counts_test",
+    "explicit_subunits_test",
+    "exports_bodies_default_test",
+    "exports_bodies_true_test",
+    "spec_only_actions_test",
+    "subunit_is_input_test",
+    "subunit_no_action_test",
+    "transitive_aggregation_test",
+    "two_unit_actions_test",
+)
+
+# Fixtures.
+
+ada_library(
+    name = "two_unit_lib",
+    srcs = [
+        "srcs/bar.adb",
+        "srcs/bar.ads",
+        "srcs/foo.adb",
+        "srcs/foo.ads",
+    ],
+    tags = ["manual"],
+)
+
+ada_library(
+    name = "copts_lib",
+    srcs = [
+        "srcs/foo.adb",
+        "srcs/foo.ads",
+    ],
+    copts = ["-gnatwa", "-O2"],
+    tags = ["manual"],
+)
+
+ada_library(
+    name = "config_pragmas_lib",
+    srcs = [
+        "srcs/foo.adb",
+        "srcs/foo.ads",
+    ],
+    config_pragmas = "srcs/restrict.adc",
+    tags = ["manual"],
+)
+
+ada_library(
+    name = "explicit_subunit_lib",
+    srcs = [
+        "srcs/parent.adb",
+        "srcs/parent.ads",
+        "srcs/parent_oddly_named.adb",
+    ],
+    subunits = ["srcs/parent_oddly_named.adb"],
+    tags = ["manual"],
+)
+
+ada_library(
+    name = "spec_only_lib",
+    srcs = ["srcs/types.ads"],
+    tags = ["manual"],
+)
+
+ada_library(
+    name = "parent_with_subunit",
+    srcs = [
+        "srcs/parent-child.adb",
+        "srcs/parent.adb",
+        "srcs/parent.ads",
+    ],
+    tags = ["manual"],
+)
+
+ada_library(
+    name = "exports_bodies_lib",
+    srcs = [
+        "srcs/foo.adb",
+        "srcs/foo.ads",
+    ],
+    exports_bodies = True,
+    tags = ["manual"],
+)
+
+ada_library(
+    name = "default_lib",
+    srcs = [
+        "srcs/foo.adb",
+        "srcs/foo.ads",
+    ],
+    tags = ["manual"],
+)
+
+ada_library(
+    name = "downstream_lib",
+    srcs = [
+        "srcs/foo.adb",
+        "srcs/foo.ads",
+    ],
+    tags = ["manual"],
+    deps = [":mixed_dep_lib"],
+)
+
+ada_library(
+    name = "mixed_dep_lib",
+    srcs = [
+        "srcs/bar.adb",
+        "srcs/bar.ads",
+        "srcs/types.ads",
+    ],
+    tags = ["manual"],
+)
+
+# Tests.
+
+two_unit_actions_test(
+    name = "two_unit_actions",
+    target_under_test = ":two_unit_lib",
+)
+
+spec_only_actions_test(
+    name = "spec_only_actions",
+    target_under_test = ":spec_only_lib",
+)
+
+subunit_no_action_test(
+    name = "subunit_no_action",
+    target_under_test = ":parent_with_subunit",
+)
+
+subunit_is_input_test(
+    name = "subunit_is_input",
+    target_under_test = ":parent_with_subunit",
+)
+
+exports_bodies_true_test(
+    name = "exports_bodies_true",
+    target_under_test = ":exports_bodies_lib",
+)
+
+exports_bodies_default_test(
+    name = "exports_bodies_default",
+    target_under_test = ":default_lib",
+)
+
+direct_ali_counts_test(
+    name = "direct_ali_counts",
+    target_under_test = ":two_unit_lib",
+)
+
+transitive_aggregation_test(
+    name = "transitive_aggregation",
+    target_under_test = ":downstream_lib",
+)
+
+copts_propagated_test(
+    name = "copts_propagated",
+    target_under_test = ":copts_lib",
+)
+
+config_pragmas_propagated_test(
+    name = "config_pragmas_propagated",
+    target_under_test = ":config_pragmas_lib",
+)
+
+explicit_subunits_test(
+    name = "explicit_subunits",
+    target_under_test = ":explicit_subunit_lib",
+)

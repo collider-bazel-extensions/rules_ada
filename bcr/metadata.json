@@ -1,0 +1,11 @@
+{
+  "homepage": "https://github.com/OWNER/rules_ada",
+  "maintainers": [],
+  "repository": [
+    "github:OWNER/rules_ada"
+  ],
+  "versions": [
+    "0.1.0"
+  ],
+  "yanked_versions": {}
+}

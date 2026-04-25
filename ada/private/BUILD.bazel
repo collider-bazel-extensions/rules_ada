@@ -1,0 +1,15 @@
+package(default_visibility = ["//ada:__subpackages__"])
+
+exports_files([
+    "ada_binary.bzl",
+    "ada_executable.bzl",
+    "ada_library.bzl",
+    "ada_shared_library.bzl",
+    "ada_static_library.bzl",
+    "ada_test.bzl",
+    "action_env.bzl",
+    "bind.bzl",
+    "compile.bzl",
+    "link.bzl",
+    "unit_naming.bzl",
+])

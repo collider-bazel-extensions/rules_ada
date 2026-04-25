@@ -1,0 +1,83 @@
+load("@rules_ada//ada:defs.bzl", "ada_binary", "ada_library")
+load(":tests.bzl",
+    "binder_does_not_see_spec_alidirs_test",
+    "body_source_flows_when_exports_bodies_test",
+    "no_body_ali_from_deps_test",
+    "no_body_source_from_default_dep_test",
+    "spec_ali_from_deps_present_test",
+)
+
+# Fixtures.
+
+ada_library(
+    name = "foo_default",
+    srcs = [
+        "srcs/foo.adb",
+        "srcs/foo.ads",
+    ],
+    tags = ["manual"],
+)
+
+ada_library(
+    name = "foo_exports_bodies",
+    srcs = [
+        "srcs/foo.adb",
+        "srcs/foo.ads",
+    ],
+    exports_bodies = True,
+    tags = ["manual"],
+)
+
+ada_library(
+    name = "bar_using_default",
+    srcs = [
+        "srcs/bar.adb",
+        "srcs/bar.ads",
+    ],
+    tags = ["manual"],
+    deps = [":foo_default"],
+)
+
+ada_library(
+    name = "bar_using_exports",
+    srcs = [
+        "srcs/bar.adb",
+        "srcs/bar.ads",
+    ],
+    tags = ["manual"],
+    deps = [":foo_exports_bodies"],
+)
+
+ada_binary(
+    name = "main_using_default",
+    srcs = ["srcs/main.adb"],
+    tags = ["manual"],
+    deps = [":foo_default"],
+)
+
+# Tests.
+
+no_body_ali_from_deps_test(
+    name = "no_body_ali_from_deps",
+    target_under_test = ":bar_using_default",
+)
+
+spec_ali_from_deps_present_test(
+    name = "spec_ali_from_deps_present",
+    target_under_test = ":bar_using_default",
+)
+
+no_body_source_from_default_dep_test(
+    name = "no_body_source_from_default_dep",
+    target_under_test = ":bar_using_default",
+)
+
+body_source_flows_when_exports_bodies_test(
+    name = "body_source_flows_when_exports_bodies",
+    target_under_test = ":bar_using_exports",
+)
+
+binder_does_not_see_spec_alidirs_test(
+    name = "binder_does_not_see_spec_alidirs",
+    target_under_test = ":main_using_default",
+)

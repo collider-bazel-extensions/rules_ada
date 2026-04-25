@@ -1,0 +1,5 @@
+{
+  "url": "https://github.com/OWNER/rules_ada/archive/refs/tags/v0.1.0.tar.gz",
+  "integrity": "sha256-FILL_THIS_IN_AT_RELEASE_TIME",
+  "strip_prefix": "rules_ada-0.1.0"
+}

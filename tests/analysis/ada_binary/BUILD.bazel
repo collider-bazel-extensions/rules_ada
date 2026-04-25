@@ -1,0 +1,61 @@
+load("@rules_ada//ada:defs.bzl", "ada_binary", "ada_test")
+load(":tests.bzl",
+    "binary_action_graph_test",
+    "binary_multiple_units_failure_test",
+    "binary_subunit_failure_test",
+    "test_is_executable_test",
+)
+
+# Fixtures.
+
+ada_binary(
+    name = "single_main",
+    srcs = ["srcs/main.adb"],
+    tags = ["manual"],
+)
+
+ada_binary(
+    name = "two_mains",
+    srcs = [
+        "srcs/main.adb",
+        "srcs/other.adb",
+    ],
+    tags = ["manual"],
+)
+
+ada_binary(
+    name = "main_with_subunit",
+    srcs = [
+        "srcs/main.adb",
+        "srcs/parent-sub.adb",
+    ],
+    tags = ["manual"],
+)
+
+ada_test(
+    name = "ada_test_target",
+    srcs = ["srcs/main.adb"],
+    tags = ["manual"],
+)
+
+# Tests.
+
+binary_action_graph_test(
+    name = "binary_action_graph",
+    target_under_test = ":single_main",
+)
+
+binary_multiple_units_failure_test(
+    name = "binary_multiple_units_failure",
+    target_under_test = ":two_mains",
+)
+
+binary_subunit_failure_test(
+    name = "binary_subunit_failure",
+    target_under_test = ":main_with_subunit",
+)
+
+test_is_executable_test(
+    name = "test_is_executable",
+    target_under_test = ":ada_test_target",
+)

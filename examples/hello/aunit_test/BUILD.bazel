@@ -1,0 +1,21 @@
+load("@rules_ada//ada:defs.bzl", "ada_library", "ada_test")
+
+ada_library(
+    name = "util_tests_lib",
+    srcs = [
+        "util_suite.adb",
+        "util_suite.ads",
+        "util_tests.adb",
+        "util_tests.ads",
+    ],
+    deps = [
+        "//examples/hello:util",
+        "@aunit//:aunit",
+    ],
+)
+
+ada_test(
+    name = "test_main",
+    srcs = ["test_main.adb"],
+    deps = [":util_tests_lib"],
+)

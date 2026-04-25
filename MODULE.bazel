@@ -1,0 +1,28 @@
+module(
+    name = "rules_ada",
+    version = "0.1.0",
+    compatibility_level = 0,
+)
+
+bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "rules_cc", version = "0.0.17")
+
+fsf_gnat = use_extension("//toolchains/fsf_gnat:extensions.bzl", "fsf_gnat")
+use_repo(fsf_gnat, "fsf_gnat")
+
+system_gnat = use_extension("//toolchains/system_gnat:extensions.bzl", "system_gnat")
+use_repo(system_gnat, "system_gnat")
+
+# fsf_gnat is the default. To run under system_gnat instead:
+#   bazel test //... --extra_toolchains=@system_gnat//:toolchain
+register_toolchains("@fsf_gnat//:toolchain")
+
+aunit = use_extension("//toolchains/aunit:extensions.bzl", "aunit")
+use_repo(aunit, "aunit")
+
+ada_toml = use_extension("//toolchains/ada_toml:extensions.bzl", "ada_toml", dev_dependency = True)
+use_repo(ada_toml, "ada_toml")
+
+adasat = use_extension("//toolchains/adasat:extensions.bzl", "adasat", dev_dependency = True)
+use_repo(adasat, "adasat")

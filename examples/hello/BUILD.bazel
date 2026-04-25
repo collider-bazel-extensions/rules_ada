@@ -1,0 +1,39 @@
+load("@rules_ada//ada:defs.bzl", "ada_binary", "ada_library", "ada_test")
+
+package(default_visibility = ["//examples:__subpackages__"])
+
+ada_library(
+    name = "util",
+    srcs = [
+        "util.adb",
+        "util.ads",
+    ],
+)
+
+ada_library(
+    name = "hello",
+    srcs = [
+        "hello.adb",
+        "hello.ads",
+    ],
+    deps = [":util"],
+)
+
+ada_binary(
+    name = "main",
+    srcs = ["main.adb"],
+    deps = [":hello"],
+)
+
+ada_test(
+    name = "util_test",
+    srcs = ["util_test.adb"],
+    deps = [":util"],
+)
+
+ada_test(
+    name = "failing_test",
+    srcs = ["failing_test.adb"],
+    deps = [":util"],
+    tags = ["manual"],
+)

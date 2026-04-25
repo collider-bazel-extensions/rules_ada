@@ -1,0 +1,28 @@
+matrix:
+  platform:
+    - debian11
+    - ubuntu2204
+  bazel: [7.x, 8.x]
+
+tasks:
+  verify_targets:
+    name: "Verify rules_ada under fsf_gnat"
+    platform: ${{ platform }}
+    bazel: ${{ bazel }}
+    build_targets:
+      - "@rules_ada//..."
+    test_targets:
+      - "@rules_ada//..."
+
+  verify_targets_system_gnat:
+    name: "Verify rules_ada under system_gnat"
+    platform: ${{ platform }}
+    bazel: ${{ bazel }}
+    shell_commands:
+      - "sudo apt-get update && sudo apt-get install -y gnat"
+    build_targets:
+      - "@rules_ada//..."
+    test_targets:
+      - "@rules_ada//..."
+    test_flags:
+      - "--extra_toolchains=@system_gnat//:toolchain"

@@ -1,0 +1,37 @@
+load("@rules_ada//ada:defs.bzl", "ada_shared_library", "ada_static_library")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
+ada_shared_library(
+    name = "ada_greet",
+    srcs = [
+        "ada_greet.adb",
+        "ada_greet.ads",
+    ],
+)
+
+ada_static_library(
+    name = "ada_greet_static",
+    srcs = [
+        "ada_greet.adb",
+        "ada_greet.ads",
+    ],
+)
+
+cc_library(
+    name = "ada_greet_h",
+    hdrs = ["ada_greet.h"],
+)
+
+# Tagged manual because the default Bazel cc_toolchain links libstdc++ even
+# for pure-C cc_binary targets, and Fedora's gcc-gnat package doesn't ship it.
+# To run: `sudo dnf install -y gcc-c++` (Fedora) / `apt install g++` (Debian),
+# then `bazel run //examples/cc_interop:main`.
+cc_binary(
+    name = "main",
+    srcs = ["main.c"],
+    tags = ["manual"],
+    deps = [
+        ":ada_greet",
+        ":ada_greet_h",
+    ],
+)
