@@ -8,11 +8,11 @@ Templates for submitting `rules_ada` to
 1. Tag the release: `git tag v0.1.0 && git push origin v0.1.0`.
 2. GitHub creates the source tarball at:
    ```
-   https://github.com/<owner>/rules_ada/archive/refs/tags/v0.1.0.tar.gz
+   https://github.com/collider-bazel-extensions/rules_ada/archive/refs/tags/v0.1.0.tar.gz
    ```
 3. Compute its sha256 and convert to the integrity format BCR uses:
    ```sh
-   curl -fsSL https://github.com/<owner>/rules_ada/archive/refs/tags/v0.1.0.tar.gz \
+   curl -fsSL https://github.com/collider-bazel-extensions/rules_ada/archive/refs/tags/v0.1.0.tar.gz \
      | sha256sum | cut -d' ' -f1 | xxd -r -p | base64 | sed 's/^/sha256-/'
    ```
 4. Fork bazelbuild/bazel-central-registry. Copy the contents of `bcr/`

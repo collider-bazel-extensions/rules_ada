@@ -1,8 +1,8 @@
 {
-  "homepage": "https://github.com/OWNER/rules_ada",
+  "homepage": "https://github.com/collider-bazel-extensions/rules_ada",
   "maintainers": [],
   "repository": [
-    "github:OWNER/rules_ada"
+    "github:collider-bazel-extensions/rules_ada"
   ],
   "versions": [
     "0.1.0"

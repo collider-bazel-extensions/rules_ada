@@ -1,5 +1,5 @@
 {
-  "url": "https://github.com/OWNER/rules_ada/archive/refs/tags/v0.1.0.tar.gz",
-  "integrity": "sha256-FILL_THIS_IN_AT_RELEASE_TIME",
+  "url": "https://github.com/collider-bazel-extensions/rules_ada/archive/refs/tags/v0.1.0.tar.gz",
+  "integrity": "sha256-SP12kAXzz+qZ1F0qKn97xnzDTDn0hPFV48lma92lHP4=",
   "strip_prefix": "rules_ada-0.1.0"
 }
