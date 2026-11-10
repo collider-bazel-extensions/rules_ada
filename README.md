@@ -50,11 +50,27 @@ the rules end-to-end, and
 
 ```starlark
 bazel_dep(name = "rules_ada", version = "0.1.0")
+archive_override(
+    module_name = "rules_ada",
+    urls = ["https://github.com/collider-bazel-extensions/rules_ada/archive/refs/tags/v0.1.0.tar.gz"],
+    strip_prefix = "rules_ada-0.1.0",
+    integrity = "sha256-SP12kAXzz+qZ1F0qKn97xnzDTDn0hPFV48lma92lHP4=",
+)
 
 fsf_gnat = use_extension("@rules_ada//toolchains/fsf_gnat:extensions.bzl", "fsf_gnat")
 use_repo(fsf_gnat, "fsf_gnat")
 register_toolchains("@fsf_gnat//:toolchain")
 ```
+
+The `archive_override` is required. The BCR has an unrelated module with the
+same name, [periareon/rules_ada](https://github.com/periareon/rules_ada)
+(0.1.0 to 0.3.0), and without the override `bazel_dep(name = "rules_ada",
+version = "0.1.0")` silently resolves to *its* 0.1.0. The loads below then
+fail (`no such package '@@rules_ada+//toolchains/fsf_gnat'`). Bzlmod resolves
+one module per name, so this module and the BCR's can't be in one build: the
+root's override applies to every module that depends on `rules_ada`, and
+`bazel_dep(..., repo_name = ...)` changes only the apparent repo name, not
+the module name.
 
 For AUnit-based testing, also wire:
 
@@ -99,8 +115,9 @@ Pre-1.0. The rule surface (`ada_library`, `ada_binary`, `ada_test`,
 analysis tests + real-codebase smoke tests. Genuinely outstanding before
 a 1.0 tag:
 
-- A real BCR submission (the `bcr/` package is ready to copy in once a
-  release tarball exists).
+- A BCR submission isn't possible under this name: the BCR's `rules_ada` is
+  a different project (see [Installation](#installation)). The `bcr/`
+  package stays as a record of v0.1.0's archive.
 - CI verification on macOS and Windows. The pre-pinned tarballs exist
   for those platforms but only `ubuntu-latest` runs in CI today.
 - `ada_library` consuming a `cc_library` dep — Ada importing C is the
