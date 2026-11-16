@@ -136,3 +136,11 @@ configurations and CI requires the same.
 ## License
 
 [Apache License 2.0](LICENSE).
+
+---
+
+## Requesting a new rules package
+
+Want Bazel rules for another tool or service?
+[Request a rules package](https://github.com/collider-bazel-extensions/.github/issues/new?template=request-a-rules-package.yml).
+The [organization page](https://github.com/collider-bazel-extensions) lists every package.
