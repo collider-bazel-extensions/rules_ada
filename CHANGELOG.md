@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.1
+
+### Fixes
+
+- `system_gnat` uses the gcc that matches the host GNAT. Distributions
+  version GNAT separately from the default compiler: on Ubuntu 26.04 the
+  `gnat` package is GNAT 14 while `gcc` is GCC 15, which has no Ada front
+  end, so every compile failed with `cannot execute 'gnat1'`. The probe now
+  prefers `gcc-<N>` for `gnatls-<N>`, falls back to `gcc`, and fails with a
+  clear message if no candidate can find `gnat1`. CI's `system_gnat` job,
+  red since April, passes again.
+- README: the install snippet includes the `archive_override` this module
+  needs, since the BCR's unrelated `rules_ada` takes the name.
+
 ## 0.1.0 — initial public release
 
 First versioned release. Pre-1.0 — public-API breadth and real-codebase

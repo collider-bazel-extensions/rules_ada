@@ -34,6 +34,39 @@ def _gnatls_paths(repository_ctx, gnatls):
         fail("rules_ada: could not parse adainclude/adalib paths from gnatls -v")
     return src_path, obj_path
 
+def _gnat_gcc(repository_ctx, gnatls):
+    """The gcc that has the Ada front end matching gnatls.
+
+    Distributions version GNAT separately from the default compiler: on
+    Ubuntu 26.04 `gnat` is GNAT 14 (gnatls -> x86_64-linux-gnu-gnatls-14)
+    while `gcc` is GCC 15, which has no gnat1, so `gcc -x ada` fails with
+    "cannot execute 'gnat1'". Prefer gcc-<N> for gnatls-<N>, then plain gcc,
+    and require that the chosen gcc can find gnat1.
+    """
+    candidates = []
+    real = str(repository_ctx.path(gnatls).realpath)
+    base = real.rsplit("/", 1)[-1]
+    suffix = base.rsplit("-", 1)[-1] if "-" in base else ""
+    if suffix.isdigit():
+        triple = base[:-len("gnatls-" + suffix)]  # e.g. "x86_64-linux-gnu-" or ""
+        for name in [triple + "gcc-" + suffix, "gcc-" + suffix]:
+            p = repository_ctx.which(name)
+            if p != None:
+                candidates.append(p)
+    gcc = repository_ctx.which("gcc")
+    if gcc != None:
+        candidates.append(gcc)
+    for candidate in candidates:
+        res = repository_ctx.execute([candidate, "-print-prog-name=gnat1"])
+        if res.return_code == 0 and res.stdout.strip().startswith("/"):
+            return candidate
+    fail(("rules_ada: no gcc with an Ada front end (gnat1) matches %s; tried %s. " +
+          "Install the gcc that matches your GNAT (for example gcc-%s).") % (
+        real,
+        ", ".join([str(c) for c in candidates]) or "nothing on PATH",
+        suffix or "<version>",
+    ))
+
 def _libgnat_dir(repository_ctx, gcc):
     res = repository_ctx.execute([gcc, "-print-file-name=libgnat.so"])
     if res.return_code != 0 or not res.stdout.strip().startswith("/"):
@@ -69,9 +102,9 @@ def _quote_list(items, prefix):
     return ",\n        ".join(['"%s%s"' % (prefix, f) for f in items])
 
 def _system_gnat_impl(repository_ctx):
-    gcc = _which(repository_ctx, "gcc")
     gnatbind = _which(repository_ctx, "gnatbind")
     gnatls = _which(repository_ctx, "gnatls")
+    gcc = _gnat_gcc(repository_ctx, gnatls)
 
     adainclude, adalib = _gnatls_paths(repository_ctx, gnatls)
     libgnatdir = _libgnat_dir(repository_ctx, gcc) or adalib
