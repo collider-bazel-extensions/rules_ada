@@ -49,12 +49,12 @@ the rules end-to-end, and
 `MODULE.bazel`:
 
 ```starlark
-bazel_dep(name = "rules_ada", version = "0.1.0")
+bazel_dep(name = "rules_ada", version = "0.1.1")
 archive_override(
     module_name = "rules_ada",
-    urls = ["https://github.com/collider-bazel-extensions/rules_ada/archive/refs/tags/v0.1.0.tar.gz"],
-    strip_prefix = "rules_ada-0.1.0",
-    integrity = "sha256-SP12kAXzz+qZ1F0qKn97xnzDTDn0hPFV48lma92lHP4=",
+    urls = ["https://github.com/collider-bazel-extensions/rules_ada/archive/refs/tags/v0.1.1.tar.gz"],
+    strip_prefix = "rules_ada-0.1.1",
+    integrity = "sha256-GUE7IDGdaii0i4dTcH3u7/7kHnoh1G/E7ce0ZhtvXas=",
 )
 
 fsf_gnat = use_extension("@rules_ada//toolchains/fsf_gnat:extensions.bzl", "fsf_gnat")
